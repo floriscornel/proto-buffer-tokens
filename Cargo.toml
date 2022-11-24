@@ -1,0 +1,24 @@
+[package]
+name = "proto-buffer-tokens"
+version = "0.1.0"
+authors = ["Floris Cornel <floris@cornel.email>"]
+license = "MIT/Apache-2.0"
+readme = "README.md"
+description = "Encode and decode Protocol Buffer Tokens"
+repository = "https://github.com/floriscornel/proto-buffer-tokens"
+keywords = ["proto", "protocol", "buffer", "token"]   
+edition = "2021"
+include = ["src/**/*", "LICENSE-*", "*.md"]
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+base64 = "0.13.1"
+base91 = "0.1.0"
+chrono = "0.4.23"
+ed25519-dalek = "1.0.1"
+prost = "0.11.2"
+prost-types = "0.11.2"
+rand_07 = { package = "rand", version = "0.7.3" }
+uuid =  "1.2.2"
