@@ -11,45 +11,35 @@ pub struct Token {
 }
 
 impl Token {
+    pub fn from_bytes(bytes: &[u8], public_key: &PublicKey) -> Option<Self> {
+        if let Ok(signed_token) = SignedPayload::from_bytes(bytes) {
+            signed_token.get_payload(public_key)?.to_token()
+        } else {
+            None
+        }
+    }
+
+    pub fn to_bytes(self, keypair: &Keypair) -> Vec<u8> {
+        SignedPayload::from_payload(Payload::from_token(self), keypair).to_bytes()
+    }
+
     pub fn from_base64(token_string: &str, public_key: &PublicKey) -> Option<Self> {
-        match base64::decode(token_string) {
-            Ok(singed_payload_bytes) => match SignedPayload::from_bytes(&singed_payload_bytes) {
-                Ok(signed_token) => {
-                    if let Some(payload) = signed_token.get_payload(public_key) {
-                        payload.to_token()
-                    } else {
-                        None
-                    }
-                }
-                Err(_) => None,
-            },
-            Err(_) => None,
+        if let Ok(bytes) = base64::decode(token_string) {
+            Self::from_bytes(&bytes, public_key)
+        } else {
+            None
         }
     }
 
     pub fn to_base64(self, keypair: &Keypair) -> String {
-        let payload = Payload::from_token(self);
-        let singed_payload = SignedPayload::from_payload(payload, keypair);
-        base64::encode(singed_payload.to_bytes())
+        base64::encode(self.to_bytes(keypair))
     }
 
     pub fn from_base91(token_string: &str, public_key: &PublicKey) -> Option<Self> {
-        match SignedPayload::from_bytes(&base91::slice_decode(token_string.as_bytes())) {
-            Ok(signed_token) => {
-                if let Some(payload) = signed_token.get_payload(public_key) {
-                    payload.to_token()
-                } else {
-                    None
-                }
-            }
-            Err(_) => None,
-        }
+        Self::from_bytes(&base91::slice_decode(token_string.as_bytes()), public_key)
     }
 
     pub fn to_base91(self, keypair: &Keypair) -> String {
-        let payload = Payload::from_token(self);
-        let singed_payload = SignedPayload::from_payload(payload, keypair);
-        let encoded = base91::slice_encode(&singed_payload.to_bytes());
-        String::from_utf8(encoded).unwrap()
+        String::from_utf8(base91::slice_encode(&self.to_bytes(keypair))).unwrap()
     }
 }
