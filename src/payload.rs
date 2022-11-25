@@ -2,7 +2,7 @@ use chrono::{LocalResult, TimeZone, Utc};
 use prost::{DecodeError, Message};
 use uuid::Uuid;
 
-use crate::token::Token;
+use crate::Token;
 
 #[derive(PartialEq, Eq, Message)]
 pub struct Payload {
@@ -21,7 +21,11 @@ impl Payload {
         Self::decode(payload_bytes)
     }
 
-    pub fn from_token(token: Token) -> Self {
+    pub fn as_bytes(&self) -> Vec<u8> {
+        self.encode_to_vec()
+    }
+
+    pub fn from_token(token: &Token) -> Self {
         let (uuid_lhs, uuid_rhs) = token.user_id.as_u64_pair();
         Self {
             uuid_lhs,
@@ -32,22 +36,16 @@ impl Payload {
     }
 
     pub fn to_token(&self) -> Option<Token> {
-        if let LocalResult::Single(not_before) = Utc.timestamp_opt(self.not_before, 0) {
-            if let LocalResult::Single(not_after) = Utc.timestamp_opt(self.not_after, 0) {
-                return Some(Token {
-                    user_id: Uuid::from_u64_pair(self.uuid_lhs, self.uuid_rhs),
-                    not_before,
-                    not_after,
-                });
-            }
-        }
-        None
+        let LocalResult::Single(not_before) = Utc.timestamp_opt(self.not_before, 0) else {
+            return None;
+        };
+        let LocalResult::Single(not_after) = Utc.timestamp_opt(self.not_after, 0)  else {
+            return None;
+        };
+        Some(Token {
+            user_id: Uuid::from_u64_pair(self.uuid_lhs, self.uuid_rhs),
+            not_before,
+            not_after,
+        })
     }
-}
-
-#[cfg(test)]
-mod tests {
-
-    #[test]
-    fn encoding_and_decoding_is_consistent() {}
 }
