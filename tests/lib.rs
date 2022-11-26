@@ -47,7 +47,7 @@ mod tests {
 
         assert_eq!(token, decoded);
 
-        let expected_b64_token = "CkAzIwRsTlop06GHU2go21V8TL0XvGW509+OaH/zb9CRxXNTQkK/ubGzPsm+mty70wltZdEI6kcHp/DFOy6XVYIMEh4JCk/8Mi77Fm4RncB2AX7BeZUYnKb/mwYgrML/mwY=";
+        let expected_b64_token = "MyMEbE5aKdOhh1NoKNtVfEy9F7xludPfjmh/82/QkcVzU0JCv7mxsz7Jvprcu9MJbWXRCOpHB6fwxTsul1WCDAkKT/wyLvsWbhGdwHYBfsF5lRicpv+bBiCswv+bBg==";
         let encoded_b64_token = base64::encode(&signed_payload);
         assert_eq!(&encoded_b64_token, expected_b64_token);
 
@@ -57,7 +57,7 @@ mod tests {
         assert_eq!(parsed_token.not_before, not_before);
         assert_eq!(parsed_token.not_after, not_after);
 
-        let expected_b91_token = "KABkpB0ooes6`q!O<4[%%rm]HCy,{UgnE5gnhnKy@_!6$M6>`*l;*+V;]{@6g/<!kMF~yC=u^_ugpf^WjZ0MwD6?sx5{Y?Gw@\"VIP(V[zG[2D~%6vWDP~~aJA";
+        let expected_b91_token = "AJj\"0bcaGphF=uK0(eryz&C?of@6!^j#n.^EZz43f02u<2X<R}g<l2i>Kp!<=HyBMLI?4_L>0,R8i+1BOV2hWQ7$QgoU\"lZ\"Fu/edEc2\"sdCKi5_!TNA";
         let encoded_b91_token = String::from_utf8(base91::slice_encode(&signed_payload)).unwrap();
         assert_eq!(&encoded_b91_token, expected_b91_token);
 
@@ -81,5 +81,23 @@ mod tests {
         .expect("Could not create keypair from public_key_base64 bytes");
 
         assert_eq!(new_keypair.to_bytes(), keypair_bytes);
+    }
+
+    #[test]
+    fn handle_invalid_input() {
+        let keypair_base64 = "lqfKGQWmPPpuv/N96ac2sPXaVaEgDsz3qYk/g1en+HP+ELqND/uhgZsQgPA/H6TlCpiVRxTYeYHXQSbNkXXE5Q==";
+
+        let public_key = Keypair::from_bytes(
+            &base64::decode(keypair_base64).expect("Could not decode base64 of public_key_base64"),
+        )
+        .expect("Could not create keypair from public_key_base64 bytes")
+        .public;
+        let verifier = TokenVerifier::<ed25519_dalek::PublicKey>::new(public_key);
+
+        let expected_b64_token = "dGVzdA=="; //test
+
+        let decoded_base64 = base64::decode(expected_b64_token).unwrap();
+        let parsed_token = verifier.get_verified_token(&decoded_base64);
+        assert_eq!(parsed_token, None);
     }
 }
