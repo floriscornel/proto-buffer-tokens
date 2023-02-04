@@ -35,7 +35,7 @@ where
     pub fn sign_token(&self, token: &Token) -> Vec<u8> {
         let payload = Payload::from_token(token).as_bytes();
         let signature = self.keypair.sign(&payload);
-        SignedPayload::new(payload, signature).to_bytes()
+        SignedPayload::new(payload.to_vec(), signature).to_bytes()
     }
 }
 

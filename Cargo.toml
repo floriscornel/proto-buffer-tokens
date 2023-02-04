@@ -6,7 +6,7 @@ license = "MIT/Apache-2.0"
 readme = "README.md"
 description = "Encode and decode Protocol Buffer Tokens"
 repository = "https://github.com/floriscornel/proto-buffer-tokens"
-keywords = ["proto", "protocol", "buffer", "token"]   
+keywords = ["proto", "protocol", "buffer", "token"]
 edition = "2021"
 include = ["src/**/*", "tests/**/*", "LICENSE-*", "*.md"]
 
@@ -14,14 +14,13 @@ include = ["src/**/*", "tests/**/*", "LICENSE-*", "*.md"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+byteorder = "1.4.3"
 chrono = "0.4.23"
-ed25519 = "1.5.2"
-prost = "0.11.2"
-prost-types = "0.11.2"
-uuid =  "1.2.2"
+ed25519 = "1.5.3"
+uuid = "1.3.0"
 
 [dev-dependencies]
 rand_07 = { package = "rand", version = "0.7.3" }
 ed25519-dalek = "1.0.1"
-base64 = "0.13.1"
+base64 = "0.21.0"
 base91 = "0.1.0"

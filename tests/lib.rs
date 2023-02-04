@@ -47,7 +47,7 @@ mod tests {
 
         assert_eq!(token, decoded);
 
-        let expected_b64_token = "MyMEbE5aKdOhh1NoKNtVfEy9F7xludPfjmh/82/QkcVzU0JCv7mxsz7Jvprcu9MJbWXRCOpHB6fwxTsul1WCDAkKT/wyLvsWbhGdwHYBfsF5lRicpv+bBiCswv+bBg==";
+        let expected_b64_token = "nyjkTac7WWntmx94l8IOFidO7j5FIngC2AHb8cYoqSggD73fpCRY72WQPlDl7tjyE6qRrk/jQgfTOED91ReUAApP/DIu+xZuncB2AX7BeZUc039jAAAAACzhf2MAAAAA";
         let encoded_b64_token = base64::encode(&signed_payload);
         assert_eq!(&encoded_b64_token, expected_b64_token);
 
@@ -57,7 +57,7 @@ mod tests {
         assert_eq!(parsed_token.not_before, not_before);
         assert_eq!(parsed_token.not_after, not_after);
 
-        let expected_b91_token = "AJj\"0bcaGphF=uK0(eryz&C?of@6!^j#n.^EZz43f02u<2X<R}g<l2i>Kp!<=HyBMLI?4_L>0,R8i+1BOV2hWQ7$QgoU\"lZ\"Fu/edEc2\"sdCKi5_!TNA";
+        let expected_b91_token = "XYzq6b{zw#ZnjBY1vpp*|2A_PM|>L\"etL+(Is7q\"_49>FNY;!,`[K7|%DgBH#x>]<*=oJle\"#hRE:A4_gs~$y>$m&B{g4}@2Za@ainMAAAv(2__xBAAAA";
         let encoded_b91_token = String::from_utf8(base91::slice_encode(&signed_payload)).unwrap();
         assert_eq!(&encoded_b91_token, expected_b91_token);
 
